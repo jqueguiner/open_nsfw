@@ -35,6 +35,12 @@ except ImportError:
 
 
 app = Flask(__name__)
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
 def classify(image_path: str) -> np.float64:
     with open(image_path, "rb") as image:
         scores = caffe_preprocess_and_compute(image.read(), caffe_transformer=caffe_transformer, caffe_net=nsfw_net, output_layers=["prob"])
@@ -48,9 +54,14 @@ def detect():
     input_path = generate_random_filename(upload_directory,"jpg")
 
     try:
-        url = request.json["url"]
-
-        download(url, input_path)
+        if 'file' in request.files:
+            file = request.files['file']
+            if allowed_file(file.filename):
+                file.save(input_path)
+            
+        else:
+            url = request.json["url"]
+            download(url, input_path)
 
         results = []
         nudity = classify(input_path)
@@ -75,6 +86,8 @@ def detect():
 if __name__ == '__main__':
     global upload_directory, model_directory
     global nsfw_net, caffe_transformer
+    global ALLOWED_EXTENSIONS
+    ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 
     upload_directory = '/src/upload/'
