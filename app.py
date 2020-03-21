@@ -96,7 +96,7 @@ if __name__ == '__main__':
     model_directory = '/src/nsfw_model/'
     create_directory(model_directory)
 
-    model_url_prefix = "http://pretrained-models.auth-18b62333a540498882ff446ab602528b.storage.gra5.cloud.ovh.net/image/nsfw/"
+    model_url_prefix = "http://pretrained-models.auth-18b62333a540498882ff446ab602528b.storage.gra.cloud.ovh.net/image/nsfw/"
 
     get_multi_model_bin([(
             model_url_prefix + 'deploy.prototxt', 
